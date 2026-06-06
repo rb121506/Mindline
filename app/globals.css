@@ -1,26 +1,288 @@
 @import "tailwindcss";
 
+/* Dark mode via the `.dark` class on <html> (class strategy). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────────────────────────  Design tokens  ─────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Warm "paper" light theme */
+  --background: #fbfaf7;
+  --background-grad: #f6f2ea;
+  --foreground: #211c16;
+  --card: #ffffff;
+  --card-muted: #f5f2ec;
+  --muted: #f0ece4;
+  --muted-foreground: #7c7468;
+  --border: #ece7dd;
+  --border-strong: #ddd6c8;
+
+  /* Ember accent */
+  --accent: #d97706;
+  --accent-strong: #b45309;
+  --accent-soft: #fdf0e1;
+  --accent-foreground: #ffffff;
+
+  --grad-from: #f59e0b;
+  --grad-to: #ea580c;
+
+  --ring: color-mix(in srgb, var(--accent) 35%, transparent);
+
+  --shadow-color: 28deg 30% 55%;
 }
 
+.dark {
+  /* Warm "ink" dark theme */
+  --background: #131110;
+  --background-grad: #1a1714;
+  --foreground: #f4efe7;
+  --card: #1c1916;
+  --card-muted: #232019;
+  --muted: #262119;
+  --muted-foreground: #a39a8c;
+  --border: #2c2722;
+  --border-strong: #393229;
+
+  --accent: #f59e0b;
+  --accent-strong: #fbbf24;
+  --accent-soft: #2a2114;
+  --accent-foreground: #1a1410;
+
+  --grad-from: #fbbf24;
+  --grad-to: #f97316;
+
+  --ring: color-mix(in srgb, var(--accent) 45%, transparent);
+
+  --shadow-color: 30deg 12% 4%;
+}
+
+/* ───────────────────────────  Theme mapping  ─────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-muted: var(--card-muted);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-foreground: var(--accent-foreground);
+
   --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
+
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+
+  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.04),
+    0 4px 12px hsl(var(--shadow-color) / 0.06);
+  --shadow-elevated: 0 2px 4px hsl(var(--shadow-color) / 0.05),
+    0 12px 32px -8px hsl(var(--shadow-color) / 0.14);
+  --shadow-glow: 0 8px 28px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.4s ease both;
+  --animate-scale-in: scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
 
+/* ───────────────────────────  Base  ─────────────────────────── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image: radial-gradient(
+    120% 120% at 100% 0%,
+    var(--background-grad) 0%,
+    var(--background) 55%
+  );
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+/* Refined, thin scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Utility helpers */
+.text-gradient {
+  background: linear-gradient(120deg, var(--grad-from), var(--grad-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.bg-ember {
+  background: linear-gradient(120deg, var(--grad-from), var(--grad-to));
+}
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 6%, transparent),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* ───────────────────────────  Tiptap editor  ─────────────────────────── */
+.tiptap {
+  font-family: var(--font-serif), Georgia, serif;
+}
+.tiptap:focus {
+  outline: none;
+}
+.tiptap p {
+  margin: 0.6rem 0;
+  line-height: 1.8;
+}
+.tiptap > :first-child {
+  margin-top: 0;
+}
+.tiptap h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 1.1rem 0 0.5rem;
+}
+.tiptap h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0.9rem 0 0.4rem;
+}
+.tiptap ul {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin: 0.5rem 0;
+}
+.tiptap ol {
+  list-style: decimal;
+  padding-left: 1.4rem;
+  margin: 0.5rem 0;
+}
+.tiptap li {
+  margin: 0.2rem 0;
+}
+.tiptap strong {
+  font-weight: 700;
+}
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.tiptap img,
+.journal-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 0.75rem 0;
+  border: 1px solid var(--border);
+}
+.tiptap img.ProseMirror-selectednode {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ───────────────────────────  Print / PDF  ─────────────────────────── */
+@media print {
+  aside,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    background-image: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  .print-entry {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .print-page-break {
+    break-after: page;
+    page-break-after: always;
+  }
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
 }
