@@ -6,11 +6,13 @@ import { createClient } from "@/lib/supabase/client";
 import {
   CalendarIcon,
   ChartIcon,
+  ChatIcon,
   DownloadIcon,
   HomeIcon,
   PlusIcon,
   SearchIcon,
   SettingsIcon,
+  ShuffleIcon,
 } from "@/components/icons";
 import { MOOD_EMOJI, type Mood } from "@/lib/types";
 import { formatEntryDate } from "@/lib/text";
@@ -28,8 +30,10 @@ const ACTIONS = [
   { id: "home", label: "Go to Home", href: "/", Icon: HomeIcon },
   { id: "calendar", label: "Go to Calendar", href: "/calendar", Icon: CalendarIcon },
   { id: "insights", label: "Go to Insights", href: "/insights", Icon: ChartIcon },
+  { id: "chat", label: "Chat with journal", href: "/chat", Icon: ChatIcon },
   { id: "settings", label: "Go to Settings", href: "/settings", Icon: SettingsIcon },
   { id: "export", label: "Export journal", href: "/export", Icon: DownloadIcon },
+  { id: "surprise", label: "Surprise me 🎲", href: "/api/surprise", Icon: ShuffleIcon },
 ];
 
 export function CommandPalette() {

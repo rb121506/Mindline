@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { EntryEditor } from "@/components/editor/EntryEditor";
+import { EntryPageWrapper } from "@/components/editor/EntryPageWrapper";
 import { getEntry } from "@/lib/entries";
 import { requireUser } from "@/lib/dal";
 
@@ -16,9 +16,5 @@ export default async function EntryPage({
 
   if (!entry) notFound();
 
-  return (
-    <div className="py-2">
-      <EntryEditor entry={entry} />
-    </div>
-  );
+  return <EntryPageWrapper entry={entry} />;
 }

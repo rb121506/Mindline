@@ -12,8 +12,18 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
       {/* Ember accent rail on hover */}
       <span className="absolute inset-y-0 left-0 w-1 origin-top scale-y-0 bg-ember transition-transform duration-300 group-hover:scale-y-100" />
 
+      {/* Pin indicator */}
+      {entry.pinned && (
+        <span
+          title="Pinned"
+          className="absolute right-3 top-3 text-xs text-accent"
+        >
+          📌
+        </span>
+      )}
+
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+        <div className="min-w-0 pr-5">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {formatEntryDate(entry.entry_date)}
           </p>

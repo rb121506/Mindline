@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/dal";
+import { getRandomEntryId } from "@/lib/entries";
 import { entryInputSchema, type ValidatedEntryInput } from "@/lib/validations";
 
 function deriveTitle(input: ValidatedEntryInput): string {
@@ -99,6 +100,31 @@ export async function deleteEntry(id: string): Promise<{ error?: string }> {
   revalidatePath("/calendar");
   revalidatePath("/insights");
   redirect("/");
+}
+
+/** Toggle pin state on an entry. */
+export async function togglePin(
+  id: string,
+  pinned: boolean,
+): Promise<{ error?: string }> {
+  await requireUser();
+  if (typeof id !== "string" || !/^[a-f0-9-]{36}$/.test(id)) {
+    return { error: "Invalid entry ID." };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("entries")
+    .update({ pinned })
+    .eq("id", id);
+  if (error) return { error: error.message };
+  revalidatePath("/");
+  return {};
+}
+
+/** Navigate to a random entry. */
+export async function surpriseMe(): Promise<never> {
+  const id = await getRandomEntryId();
+  redirect(id ? `/entry/${id}` : "/");
 }
 
 /** Delete without redirecting — for inline (swipe) deletion from a list. */

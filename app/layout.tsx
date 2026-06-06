@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, themeScript } from "@/components/ThemeProvider";
+import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +23,12 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "Mindline",
   description: "Your private space to reflect, one day at a time.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Mindline",
+  },
 };
 
 export default function RootLayout({
@@ -37,9 +44,12 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="theme-color" content="#d97706" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
       </head>
       <body className="min-h-full bg-background text-foreground font-sans">
         <ThemeProvider>{children}</ThemeProvider>
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );

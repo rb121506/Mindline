@@ -13,7 +13,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 flex items-stretch border-t border-border/70 bg-card/80 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
+    <nav data-bottom-nav className="fixed inset-x-0 bottom-0 z-30 flex items-stretch border-t border-border/70 bg-card/80 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
       {NAV_ITEMS.map((item) => (
         <NavTab key={item.href} item={item} active={isActive(pathname, item.href)} />
       ))}

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { SwipeableCard } from "@/components/home/SwipeableCard";
 import { PenIcon, SearchIcon } from "@/components/icons";
-import { removeEntry } from "@/app/actions/entries";
+import { removeEntry, togglePin } from "@/app/actions/entries";
 import type { Entry } from "@/lib/types";
 
 export function EntryList({
@@ -21,10 +21,22 @@ export function EntryList({
   async function handleDelete(id: string) {
     if (!confirm("Delete this entry?")) return;
     const prev = entries;
-    setEntries((list) => list.filter((e) => e.id !== id)); // optimistic
+    setEntries((list) => list.filter((e) => e.id !== id));
     const res = await removeEntry(id);
     if (res?.error) {
-      setEntries(prev); // rollback
+      setEntries(prev);
+      alert(res.error);
+    }
+  }
+
+  async function handlePin(id: string, pinned: boolean) {
+    const prev = entries;
+    setEntries((list) =>
+      list.map((e) => (e.id === id ? { ...e, pinned } : e)),
+    );
+    const res = await togglePin(id, pinned);
+    if (res?.error) {
+      setEntries(prev);
       alert(res.error);
     }
   }
@@ -38,6 +50,20 @@ export function EntryList({
       return haystack.includes(q);
     });
   }, [entries, query, activeTag]);
+
+  const pinnedEntries = filtered.filter((e) => e.pinned);
+  const regularEntries = filtered.filter((e) => !e.pinned);
+
+  function CardRow({ entry, index }: { entry: Entry; index: number }) {
+    return (
+      <SwipeableCard
+        entry={entry}
+        index={index}
+        onDelete={handleDelete}
+        onPin={handlePin}
+      />
+    );
+  }
 
   return (
     <div>
@@ -74,15 +100,36 @@ export function EntryList({
       {filtered.length === 0 ? (
         <EmptyState hasEntries={entries.length > 0} />
       ) : (
-        <div className="grid gap-3">
-          {filtered.map((entry, i) => (
-            <SwipeableCard
-              key={entry.id}
-              entry={entry}
-              index={i}
-              onDelete={handleDelete}
-            />
-          ))}
+        <div className="space-y-6">
+          {/* Pinned section */}
+          {pinnedEntries.length > 0 && (
+            <section>
+              <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                📌 Pinned
+              </p>
+              <div className="grid gap-3">
+                {pinnedEntries.map((entry, i) => (
+                  <CardRow key={entry.id} entry={entry} index={i} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* All / rest */}
+          {regularEntries.length > 0 && (
+            <section>
+              {pinnedEntries.length > 0 && (
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Entries
+                </p>
+              )}
+              <div className="grid gap-3">
+                {regularEntries.map((entry, i) => (
+                  <CardRow key={entry.id} entry={entry} index={i} />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
     </div>

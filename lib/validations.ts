@@ -34,3 +34,16 @@ export type ValidatedEntryInput = z.infer<typeof entryInputSchema>;
 export const aiTitleSchema = z.object({
   text: z.string().min(1, "No text provided.").max(50_000, "Text too long."),
 });
+
+/** Schema for the journal chat endpoint. */
+export const chatInputSchema = z.object({
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().max(4000),
+      }),
+    )
+    .max(30, "Too many messages in history."),
+  message: z.string().min(1, "Message is empty.").max(2000),
+});

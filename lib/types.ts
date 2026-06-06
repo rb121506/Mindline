@@ -32,6 +32,7 @@ export interface Entry {
   /** ISO date (YYYY-MM-DD) the entry is for. */
   entry_date: string;
   word_count: number;
+  pinned: boolean;
   created_at: string;
   updated_at: string;
 }

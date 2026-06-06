@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { NAV_ITEMS } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
 import { logout } from "@/app/actions/auth";
-import { LogoutIcon, PlusIcon, SearchIcon } from "@/components/icons";
+import { surpriseMe } from "@/app/actions/entries";
+import { LogoutIcon, PlusIcon, SearchIcon, ShuffleIcon } from "@/components/icons";
 
 function openPalette() {
   window.dispatchEvent(new Event("open-command-palette"));
@@ -18,6 +21,21 @@ function isActive(pathname: string, href: string) {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [surprising, setSurprising] = useState(false);
+
+  async function handleSurprise() {
+    setSurprising(true);
+    try {
+      await surpriseMe();
+    } catch {
+      // surpriseMe redirects, which throws a special Next.js redirect error.
+      // If it's a genuine error, just go home.
+      router.push("/");
+    } finally {
+      setSurprising(false);
+    }
+  }
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border/70 bg-card/40 px-4 py-6 backdrop-blur-xl md:flex">
@@ -38,16 +56,26 @@ export function Sidebar() {
         New entry
       </Link>
 
-      <button
-        onClick={openPalette}
-        className="mt-2 flex items-center gap-2.5 rounded-xl border border-border bg-card/50 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
-      >
-        <SearchIcon className="h-4 w-4" />
-        <span className="flex-1 text-left">Search…</span>
-        <kbd className="rounded border border-border px-1.5 py-0.5 text-[10px]">
-          ⌘K
-        </kbd>
-      </button>
+      <div className="mt-2 flex gap-2">
+        <button
+          onClick={openPalette}
+          className="flex flex-1 items-center gap-2.5 rounded-xl border border-border bg-card/50 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
+        >
+          <SearchIcon className="h-4 w-4" />
+          <span className="flex-1 text-left">Search…</span>
+          <kbd className="rounded border border-border px-1.5 py-0.5 text-[10px]">
+            ⌘K
+          </kbd>
+        </button>
+        <button
+          onClick={handleSurprise}
+          disabled={surprising}
+          title="Surprise me — open a random entry"
+          className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-xl border border-border bg-card/50 text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50"
+        >
+          <ShuffleIcon className={`h-4 w-4 ${surprising ? "animate-spin" : ""}`} />
+        </button>
+      </div>
 
       <nav className="mt-7 flex flex-1 flex-col gap-1">
         <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">

@@ -2,19 +2,23 @@
 
 import { useRef, useState, type TouchEvent } from "react";
 import { EntryCard } from "@/components/EntryCard";
-import { TrashIcon } from "@/components/icons";
+import { PinIcon, PinOffIcon, TrashIcon } from "@/components/icons";
 import type { Entry } from "@/lib/types";
 
-const REVEAL = 88; // px width of the delete action
+const PIN_WIDTH = 64;
+const DEL_WIDTH = 72;
+const REVEAL = PIN_WIDTH + DEL_WIDTH; // 136px total
 
 export function SwipeableCard({
   entry,
   index,
   onDelete,
+  onPin,
 }: {
   entry: Entry;
   index: number;
   onDelete: (id: string) => void;
+  onPin: (id: string, pinned: boolean) => void;
 }) {
   const [offset, setOffset] = useState(0);
   const [open, setOpen] = useState(false);
@@ -29,7 +33,6 @@ export function SwipeableCard({
   function onTouchMove(e: TouchEvent) {
     if (!dragging.current) return;
     const dx = e.touches[0].clientX - startX.current + (open ? -REVEAL : 0);
-    // Only allow left-swipe (negative), clamp to reveal width.
     setOffset(Math.max(-REVEAL, Math.min(0, dx)));
   }
 
@@ -40,16 +43,37 @@ export function SwipeableCard({
     setOffset(shouldOpen ? -REVEAL : 0);
   }
 
+  function closeReveal() {
+    setOpen(false);
+    setOffset(0);
+  }
+
   return (
     <div className="relative overflow-hidden rounded-2xl">
-      {/* Delete action behind the card */}
-      <button
-        onClick={() => onDelete(entry.id)}
-        aria-label="Delete entry"
-        className="absolute inset-y-0 right-0 flex w-[88px] items-center justify-center bg-red-500 text-white"
-      >
-        <TrashIcon className="h-5 w-5" />
-      </button>
+      {/* Actions behind the card */}
+      <div className="absolute inset-y-0 right-0 flex" style={{ width: REVEAL }}>
+        {/* Pin / Unpin */}
+        <button
+          onClick={() => { onPin(entry.id, !entry.pinned); closeReveal(); }}
+          aria-label={entry.pinned ? "Unpin entry" : "Pin entry"}
+          style={{ width: PIN_WIDTH }}
+          className="flex items-center justify-center bg-amber-500 text-white transition-opacity hover:bg-amber-600"
+        >
+          {entry.pinned
+            ? <PinOffIcon className="h-5 w-5" />
+            : <PinIcon className="h-5 w-5" />}
+        </button>
+
+        {/* Delete */}
+        <button
+          onClick={() => { onDelete(entry.id); closeReveal(); }}
+          aria-label="Delete entry"
+          style={{ width: DEL_WIDTH }}
+          className="flex items-center justify-center bg-red-500 text-white transition-opacity hover:bg-red-600"
+        >
+          <TrashIcon className="h-5 w-5" />
+        </button>
+      </div>
 
       {/* Foreground card */}
       <div
@@ -59,12 +83,10 @@ export function SwipeableCard({
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         onClickCapture={(e) => {
-          // If revealed, first tap just closes instead of navigating.
           if (open) {
             e.preventDefault();
             e.stopPropagation();
-            setOpen(false);
-            setOffset(0);
+            closeReveal();
           }
         }}
       >

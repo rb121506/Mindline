@@ -7,17 +7,19 @@ import { RichTextEditor } from "./RichTextEditor";
 import { EditorToolbar } from "./EditorToolbar";
 import { MoodSelector } from "./MoodSelector";
 import { TagInput } from "./TagInput";
-import { createEntry, updateEntry, deleteEntry } from "@/app/actions/entries";
+import { createEntry, updateEntry, deleteEntry, togglePin } from "@/app/actions/entries";
 import { countWords, todayISODate } from "@/lib/text";
 import { uploadImage } from "@/lib/uploadImage";
 import { downloadEntryMarkdown } from "@/lib/markdown";
 import {
   DownloadIcon,
   ImageIcon,
+  PinIcon,
+  PinOffIcon,
   SparklesIcon,
   TrashIcon,
 } from "@/components/icons";
-import type { Entry, EntryInput, Mood } from "@/lib/types";
+import type { Entry, Mood } from "@/lib/types";
 
 interface EntryEditorProps {
   entry?: Entry;
@@ -53,6 +55,7 @@ export function EntryEditor({ entry, initialDate }: EntryEditorProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [pinned, setPinned] = useState(entry?.pinned ?? false);
   const [promptLoading, setPromptLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -107,7 +110,7 @@ export function EntryEditor({ entry, initialDate }: EntryEditorProps) {
     setBodyPlain(plain);
   }, []);
 
-  function buildInput(): EntryInput {
+  function buildInput() {
     return {
       title: title.trim() || null,
       body,
@@ -117,6 +120,17 @@ export function EntryEditor({ entry, initialDate }: EntryEditorProps) {
       entry_date: entryDate,
       word_count: countWords(bodyPlain),
     };
+  }
+
+  async function handleTogglePin() {
+    if (!entry) return;
+    const next = !pinned;
+    setPinned(next);
+    const res = await togglePin(entry.id, next);
+    if (res?.error) {
+      setPinned(!next); // rollback
+      setError(res.error);
+    }
   }
 
   async function handleSave() {
@@ -324,15 +338,32 @@ export function EntryEditor({ entry, initialDate }: EntryEditorProps) {
           <DownloadIcon className="h-[18px] w-[18px]" />
         </button>
         {isEditing && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={saving}
-            aria-label="Delete entry"
-            className="grid h-10 w-10 place-items-center rounded-xl border border-border text-red-600 transition-colors hover:border-red-300 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:border-red-900/60 dark:hover:bg-red-950/30"
-          >
-            <TrashIcon className="h-[18px] w-[18px]" />
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleTogglePin}
+              aria-label={pinned ? "Unpin entry" : "Pin entry"}
+              title={pinned ? "Unpin entry" : "Pin to top"}
+              className={`grid h-10 w-10 place-items-center rounded-xl border transition-colors ${
+                pinned
+                  ? "border-amber-300 bg-amber-50 text-amber-600 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-400"
+                  : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              {pinned
+                ? <PinOffIcon className="h-[18px] w-[18px]" />
+                : <PinIcon className="h-[18px] w-[18px]" />}
+            </button>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={saving}
+              aria-label="Delete entry"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-border text-red-600 transition-colors hover:border-red-300 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:border-red-900/60 dark:hover:bg-red-950/30"
+            >
+              <TrashIcon className="h-[18px] w-[18px]" />
+            </button>
+          </>
         )}
         <div className="ml-auto text-right text-xs text-muted-foreground">
           <span className="font-medium text-foreground">{wordCount}</span>{" "}
