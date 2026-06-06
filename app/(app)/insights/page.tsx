@@ -17,21 +17,21 @@ function StatCard({
 }) {
   return (
     <div
-      className={`animate-fade-up rounded-2xl border p-5 shadow-soft ${
+      className={`animate-fade-up rounded-2xl border p-3.5 shadow-soft sm:p-5 ${
         accent
           ? "border-transparent bg-ember text-white"
           : "border-border bg-card"
       }`}
     >
       <p
-        className={`font-serif text-3xl font-semibold tracking-tight ${
+        className={`font-serif text-2xl font-semibold tracking-tight sm:text-3xl ${
           accent ? "text-white" : ""
         }`}
       >
         {value}
       </p>
       <p
-        className={`mt-1 text-sm ${
+        className={`mt-0.5 text-xs leading-tight sm:mt-1 sm:text-sm ${
           accent ? "text-white/80" : "text-muted-foreground"
         }`}
       >
@@ -54,31 +54,27 @@ export default async function InsightsPage() {
         </h1>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <StatCard
-          label={currentStreak === 1 ? "day streak" : "day streak"}
-          value={`${currentStreak} 🔥`}
-          accent
-        />
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+        <StatCard label="day streak" value={`${currentStreak}🔥`} accent />
         <StatCard label="total entries" value={totalEntries} />
-        <StatCard label="avg words / entry" value={avgWords} />
+        <StatCard label="avg words" value={avgWords} />
       </div>
 
-      <div className="mt-5 animate-fade-up rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="mt-4 animate-fade-up rounded-2xl border border-border bg-card p-4 shadow-soft sm:mt-5 sm:p-5">
+        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:text-sm">
           Mood · last 30 days
         </h2>
         <MoodChart data={moodTrend} />
       </div>
 
-      <div className="mt-5 animate-fade-up rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="mt-4 animate-fade-up rounded-2xl border border-border bg-card p-4 shadow-soft sm:mt-5 sm:p-5">
+        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:text-sm">
           Mood · the past year
         </h2>
         <MoodHeatmap moodByDate={moodByDate} />
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+      <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 lg:grid-cols-2">
         <WeeklyReflection />
         <MonthlyRecap />
       </div>

@@ -25,9 +25,9 @@ export function MoodChart({ data }: { data: MoodPoint[] }) {
   }
 
   return (
-    <div className="h-64 w-full">
+    <div className="h-56 w-full sm:h-64">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -24 }}>
+        <BarChart data={data} margin={{ top: 8, right: 6, bottom: 0, left: -10 }}>
           <defs>
             <linearGradient id="moodGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--grad-from, #f59e0b)" />
@@ -41,19 +41,20 @@ export function MoodChart({ data }: { data: MoodPoint[] }) {
           />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-            interval={4}
+            tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+            interval={6}
             tickLine={false}
             axisLine={{ stroke: "var(--border)" }}
+            minTickGap={8}
           />
           <YAxis
             domain={[0, 5]}
             ticks={[1, 2, 3, 4, 5]}
             tickFormatter={(v) => MOOD_EMOJI[v as Mood] ?? ""}
-            tick={{ fontSize: 15 }}
+            tick={{ fontSize: 14 }}
             tickLine={false}
             axisLine={false}
-            width={40}
+            width={32}
           />
           <Tooltip
             cursor={{ fill: "color-mix(in srgb, var(--accent) 10%, transparent)" }}
