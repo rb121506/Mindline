@@ -20,8 +20,8 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Journal",
-  description: "A personal daily journal.",
+  title: "Mindline",
+  description: "Your private space to reflect, one day at a time.",
 };
 
 export default function RootLayout({

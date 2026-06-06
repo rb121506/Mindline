@@ -1,7 +1,7 @@
 import { getEntries } from "@/lib/entries";
 import { CalendarView, type CalendarDay } from "@/components/calendar/CalendarView";
 
-export const metadata = { title: "Calendar · Journal" };
+export const metadata = { title: "Calendar · Mindline" };
 
 export default async function CalendarPage() {
   const entries = await getEntries();

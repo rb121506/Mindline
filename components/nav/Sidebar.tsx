@@ -26,7 +26,7 @@ export function Sidebar() {
           📓
         </span>
         <span className="font-serif text-xl font-semibold tracking-tight">
-          Journal
+          Mindline
         </span>
       </Link>
 

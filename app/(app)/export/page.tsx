@@ -6,7 +6,7 @@ import { MOOD_EMOJI, MOOD_LABEL, type Mood } from "@/lib/types";
 import { ExportActions } from "@/components/export/ExportActions";
 import { ChevronLeftIcon } from "@/components/icons";
 
-export const metadata = { title: "Export · Journal" };
+export const metadata = { title: "Export · Mindline" };
 
 export default async function ExportPage() {
   const entries = await getEntries();
@@ -43,7 +43,7 @@ export default async function ExportPage() {
       {/* Printable document */}
       <article className="print-document mx-auto max-w-prose">
         <div className="print-entry mb-10 hidden print:block">
-          <h1 className="font-serif text-3xl font-bold">My Journal</h1>
+          <h1 className="font-serif text-3xl font-bold">Mindline</h1>
           <p className="mt-1 text-sm">
             {entries.length} {entries.length === 1 ? "entry" : "entries"}
           </p>

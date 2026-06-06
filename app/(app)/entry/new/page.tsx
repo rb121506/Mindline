@@ -1,7 +1,7 @@
 import { EntryEditor } from "@/components/editor/EntryEditor";
 import { requireUser } from "@/lib/dal";
 
-export const metadata = { title: "New entry · Journal" };
+export const metadata = { title: "New entry · Mindline" };
 
 export default async function NewEntryPage({
   searchParams,

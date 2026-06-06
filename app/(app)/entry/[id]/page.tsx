@@ -3,7 +3,7 @@ import { EntryEditor } from "@/components/editor/EntryEditor";
 import { getEntry } from "@/lib/entries";
 import { requireUser } from "@/lib/dal";
 
-export const metadata = { title: "Entry · Journal" };
+export const metadata = { title: "Entry · Mindline" };
 
 export default async function EntryPage({
   params,

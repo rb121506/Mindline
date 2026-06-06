@@ -5,7 +5,7 @@ import { ReminderSettings } from "@/components/settings/ReminderSettings";
 import { AppearanceSettings } from "@/components/settings/AppearanceSettings";
 import { LogoutIcon, DownloadIcon, ChevronRightIcon } from "@/components/icons";
 
-export const metadata = { title: "Settings · Journal" };
+export const metadata = { title: "Settings · Mindline" };
 
 export default async function SettingsPage() {
   const user = await requireUser();

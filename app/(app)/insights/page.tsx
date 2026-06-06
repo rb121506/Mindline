@@ -4,7 +4,7 @@ import { MoodHeatmap } from "@/components/insights/MoodHeatmap";
 import { WeeklyReflection } from "@/components/insights/WeeklyReflection";
 import { MonthlyRecap } from "@/components/insights/MonthlyRecap";
 
-export const metadata = { title: "Insights · Journal" };
+export const metadata = { title: "Insights · Mindline" };
 
 function StatCard({
   label,

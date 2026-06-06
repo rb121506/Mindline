@@ -1,6 +1,6 @@
 import { LoginForm } from "./LoginForm";
 
-export const metadata = { title: "Sign in · Journal" };
+export const metadata = { title: "Sign in · Mindline" };
 
 export default function LoginPage() {
   return (
@@ -11,7 +11,7 @@ export default function LoginPage() {
         <div className="relative flex h-full flex-col justify-between p-12 text-white">
           <div className="flex items-center gap-2 text-lg font-semibold">
             <span className="text-2xl">📓</span>
-            <span className="font-serif">Journal</span>
+            <span className="font-serif">Mindline</span>
           </div>
           <div className="max-w-md">
             <p className="font-serif text-4xl leading-tight tracking-tight">

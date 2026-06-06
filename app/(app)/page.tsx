@@ -4,7 +4,7 @@ import { EntryList } from "@/components/home/EntryList";
 import { OnThisDay } from "@/components/home/OnThisDay";
 import { Greeting } from "@/components/home/Greeting";
 
-export const metadata = { title: "Home · Journal" };
+export const metadata = { title: "Home · Mindline" };
 
 export default async function HomePage() {
   const [entries, allTags, onThisDay] = await Promise.all([
