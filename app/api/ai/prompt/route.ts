@@ -1,9 +1,16 @@
 import { requireUser } from "@/lib/dal";
 import { generateText } from "@/lib/gemini";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
-// Suggests a fresh journaling prompt. POST so it's never cached.
+// 10 prompts per minute per user.
+const WINDOW_MS = 60 * 1000;
+const MAX_REQUESTS = 10;
+
 export async function POST() {
-  await requireUser();
+  const user = await requireUser();
+
+  const rl = rateLimit({ key: `ai:prompt:${user.id}`, maxRequests: MAX_REQUESTS, windowMs: WINDOW_MS });
+  if (!rl.success) return rateLimitResponse(rl.resetMs);
 
   try {
     const prompt = await generateText(

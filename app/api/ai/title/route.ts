@@ -1,21 +1,34 @@
 import { requireUser } from "@/lib/dal";
 import { generateText } from "@/lib/gemini";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { aiTitleSchema } from "@/lib/validations";
 
-// Auto-generates a short title/summary from an entry's plain text.
+// 15 title generations per minute per user.
+const WINDOW_MS = 60 * 1000;
+const MAX_REQUESTS = 15;
+
 export async function POST(request: Request) {
-  await requireUser();
+  const user = await requireUser();
 
-  let body: { text?: string };
+  const rl = rateLimit({ key: `ai:title:${user.id}`, maxRequests: MAX_REQUESTS, windowMs: WINDOW_MS });
+  if (!rl.success) return rateLimitResponse(rl.resetMs);
+
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  const text = (body.text ?? "").trim();
-  if (!text) {
-    return Response.json({ error: "No text provided." }, { status: 400 });
+  const parsed = aiTitleSchema.safeParse(body);
+  if (!parsed.success) {
+    return Response.json(
+      { error: parsed.error.issues.map((i) => i.message).join("; ") },
+      { status: 400 },
+    );
   }
+
+  const text = parsed.data.text.trim();
 
   try {
     const title = await generateText(

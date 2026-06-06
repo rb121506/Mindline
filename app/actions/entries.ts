@@ -4,18 +4,22 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/dal";
-import type { EntryInput } from "@/lib/types";
+import { entryInputSchema, type ValidatedEntryInput } from "@/lib/validations";
 
-function deriveTitle(input: EntryInput): string {
+function deriveTitle(input: ValidatedEntryInput): string {
   if (input.title && input.title.trim()) return input.title.trim();
-  // Auto-generate from the first line of plain text.
   const firstLine = input.body_plain.split("\n").map((l) => l.trim()).find(Boolean);
   if (!firstLine) return "Untitled";
   return firstLine.length > 80 ? firstLine.slice(0, 80).trimEnd() + "…" : firstLine;
 }
 
-export async function createEntry(input: EntryInput): Promise<{ error?: string }> {
+export async function createEntry(raw: unknown): Promise<{ error?: string }> {
   const user = await requireUser();
+  const parsed = entryInputSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { error: parsed.error.issues.map((i) => i.message).join("; ") };
+  }
+  const input = parsed.data;
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -43,9 +47,19 @@ export async function createEntry(input: EntryInput): Promise<{ error?: string }
 
 export async function updateEntry(
   id: string,
-  input: EntryInput,
+  raw: unknown,
 ): Promise<{ error?: string }> {
   await requireUser();
+
+  if (typeof id !== "string" || !/^[a-f0-9-]{36}$/.test(id)) {
+    return { error: "Invalid entry ID." };
+  }
+
+  const parsed = entryInputSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { error: parsed.error.issues.map((i) => i.message).join("; ") };
+  }
+  const input = parsed.data;
   const supabase = await createClient();
 
   const { error } = await supabase
@@ -73,6 +87,9 @@ export async function updateEntry(
 
 export async function deleteEntry(id: string): Promise<{ error?: string }> {
   await requireUser();
+  if (typeof id !== "string" || !/^[a-f0-9-]{36}$/.test(id)) {
+    return { error: "Invalid entry ID." };
+  }
   const supabase = await createClient();
 
   const { error } = await supabase.from("entries").delete().eq("id", id);
@@ -87,6 +104,9 @@ export async function deleteEntry(id: string): Promise<{ error?: string }> {
 /** Delete without redirecting — for inline (swipe) deletion from a list. */
 export async function removeEntry(id: string): Promise<{ error?: string }> {
   await requireUser();
+  if (typeof id !== "string" || !/^[a-f0-9-]{36}$/.test(id)) {
+    return { error: "Invalid entry ID." };
+  }
   const supabase = await createClient();
 
   const { error } = await supabase.from("entries").delete().eq("id", id);

@@ -1,15 +1,22 @@
 import { requireUser } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import { generateText } from "@/lib/gemini";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { toISODate } from "@/lib/text";
 import { MOOD_LABEL, type Entry, type Mood } from "@/lib/types";
 
-// Generates (and stores) a reflection over the past 7 days of entries.
+// 5 reflections per 5 minutes per user (expensive operation).
+const WINDOW_MS = 5 * 60 * 1000;
+const MAX_REQUESTS = 5;
+
 export async function POST() {
   const user = await requireUser();
+
+  const rl = rateLimit({ key: `ai:reflection:${user.id}`, maxRequests: MAX_REQUESTS, windowMs: WINDOW_MS });
+  if (!rl.success) return rateLimitResponse(rl.resetMs);
+
   const supabase = await createClient();
 
-  // Window: last 7 days inclusive.
   const since = new Date();
   since.setDate(since.getDate() - 6);
   const sinceISO = toISODate(since);
@@ -51,7 +58,6 @@ Entries:
 ${corpus.slice(0, 12000)}`,
     );
 
-    // Store / update this week's reflection (best-effort).
     await supabase.from("weekly_reflections").upsert(
       {
         user_id: user.id,

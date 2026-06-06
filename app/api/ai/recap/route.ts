@@ -1,11 +1,19 @@
 import { requireUser } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import { generateText } from "@/lib/gemini";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { MOOD_LABEL, type Entry, type Mood } from "@/lib/types";
 
-// Generates (and stores) an AI recap of the current calendar month.
+// 3 recaps per 5 minutes per user (most expensive operation).
+const WINDOW_MS = 5 * 60 * 1000;
+const MAX_REQUESTS = 3;
+
 export async function POST() {
   const user = await requireUser();
+
+  const rl = rateLimit({ key: `ai:recap:${user.id}`, maxRequests: MAX_REQUESTS, windowMs: WINDOW_MS });
+  if (!rl.success) return rateLimitResponse(rl.resetMs);
+
   const supabase = await createClient();
 
   const now = new Date();
