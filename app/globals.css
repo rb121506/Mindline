@@ -5,54 +5,65 @@
 
 /* ───────────────────────────  Design tokens  ─────────────────────────── */
 :root {
-  /* Warm "paper" light theme */
-  --background: #fbfaf7;
-  --background-grad: #f6f2ea;
-  --foreground: #211c16;
-  --card: #ffffff;
-  --card-muted: #f5f2ec;
-  --muted: #f0ece4;
-  --muted-foreground: #7c7468;
-  --border: #ece7dd;
-  --border-strong: #ddd6c8;
+  /* "Daylight Almanac" — warm letterpress paper */
+  --background: #f6f1e7;
+  --background-grad: #ece1cd;
+  --foreground: #211808;
+  --card: #fffcf4;
+  --card-muted: #f1ebdb;
+  --muted: #ebe3d1;
+  --muted-foreground: #786a52;
+  --border: #e5dbc5;
+  --border-strong: #d4c6a8;
 
-  /* Ember accent */
-  --accent: #d97706;
-  --accent-strong: #b45309;
-  --accent-soft: #fdf0e1;
-  --accent-foreground: #ffffff;
+  /* Burnt-ember accent */
+  --accent: #c2410c;
+  --accent-strong: #9a3412;
+  --accent-soft: #f9e7da;
+  --accent-foreground: #fffaf5;
 
-  --grad-from: #f59e0b;
-  --grad-to: #ea580c;
+  /* Antique brass — hairlines, eyebrows, editorial detailing */
+  --gold: #a87b35;
+  --gold-soft: #c8a86a;
 
-  --ring: color-mix(in srgb, var(--accent) 35%, transparent);
+  --grad-from: #ef8b22;
+  --grad-to: #c2410c;
 
-  --shadow-color: 28deg 30% 55%;
+  --ring: color-mix(in srgb, var(--accent) 30%, transparent);
+
+  --shadow-color: 26deg 38% 36%;
+  --grain-opacity: 0.05;
+  --grain-blend: multiply;
 }
 
 .dark {
-  /* Warm "ink" dark theme */
-  --background: #131110;
-  --background-grad: #1a1714;
-  --foreground: #f4efe7;
-  --card: #1c1916;
-  --card-muted: #232019;
-  --muted: #262119;
-  --muted-foreground: #a39a8c;
-  --border: #2c2722;
-  --border-strong: #393229;
+  /* "Lamplight" — ink under a warm lamp */
+  --background: #100d09;
+  --background-grad: #1c150c;
+  --foreground: #f1e9d6;
+  --card: #1a1510;
+  --card-muted: #221b12;
+  --muted: #251d13;
+  --muted-foreground: #a99877;
+  --border: #2d2419;
+  --border-strong: #3d3122;
 
   --accent: #f59e0b;
   --accent-strong: #fbbf24;
-  --accent-soft: #2a2114;
-  --accent-foreground: #1a1410;
+  --accent-soft: #2a1f10;
+  --accent-foreground: #1a1206;
+
+  --gold: #c9a24a;
+  --gold-soft: #e0c27e;
 
   --grad-from: #fbbf24;
   --grad-to: #f97316;
 
   --ring: color-mix(in srgb, var(--accent) 45%, transparent);
 
-  --shadow-color: 30deg 12% 4%;
+  --shadow-color: 24deg 40% 2%;
+  --grain-opacity: 0.07;
+  --grain-blend: overlay;
 }
 
 /* ───────────────────────────  Theme mapping  ─────────────────────────── */
@@ -69,24 +80,27 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-soft: var(--accent-soft);
   --color-accent-foreground: var(--accent-foreground);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-hanken);
   --font-serif: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 
-  --radius-xl: 0.875rem;
-  --radius-2xl: 1.25rem;
-  --radius-3xl: 1.75rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1.1rem;
+  --radius-3xl: 1.5rem;
 
-  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.04),
-    0 4px 12px hsl(var(--shadow-color) / 0.06);
-  --shadow-elevated: 0 2px 4px hsl(var(--shadow-color) / 0.05),
-    0 12px 32px -8px hsl(var(--shadow-color) / 0.14);
-  --shadow-glow: 0 8px 28px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.05),
+    0 5px 14px -4px hsl(var(--shadow-color) / 0.08);
+  --shadow-elevated: 0 2px 4px hsl(var(--shadow-color) / 0.06),
+    0 16px 40px -10px hsl(var(--shadow-color) / 0.18);
+  --shadow-glow: 0 10px 30px -8px color-mix(in srgb, var(--accent) 45%, transparent);
 
-  --animate-fade-up: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-up: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in: fade-in 0.4s ease both;
-  --animate-scale-in: scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-scale-in: scale-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-rise: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes fade-up {
@@ -122,23 +136,53 @@
     transform: translateX(100%);
   }
 }
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
 
 /* ───────────────────────────  Base  ─────────────────────────── */
 body {
   background: var(--background);
   color: var(--foreground);
   background-image: radial-gradient(
-    120% 120% at 100% 0%,
-    var(--background-grad) 0%,
-    var(--background) 55%
-  );
+      120% 95% at 100% 0%,
+      var(--background-grad) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      110% 90% at 0% 100%,
+      color-mix(in srgb, var(--accent) 6%, transparent) 0%,
+      transparent 50%
+    );
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv01";
+}
+
+/* Signature film grain — analog warmth over the whole almanac. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--foreground);
 }
 
 /* Refined, thin scrollbars */
@@ -165,7 +209,60 @@ body {
   color: transparent;
 }
 .bg-ember {
-  background: linear-gradient(120deg, var(--grad-from), var(--grad-to));
+  background:
+    linear-gradient(135deg, var(--grad-from), var(--grad-to));
+  position: relative;
+}
+/* Inner light edge for a pressed-foil look on ember surfaces. */
+.bg-ember::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, white 22%, transparent),
+    transparent 40%
+  );
+  pointer-events: none;
+}
+
+/* Brass small-caps eyebrow — the editorial label voice. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Hairline rule with a brass tick, almanac-style. */
+.rule-brass {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--gold-soft),
+    color-mix(in srgb, var(--border-strong) 70%, transparent) 30%,
+    transparent
+  );
+}
+
+/* Tabular old-style figures for stats. */
+.numerals {
+  font-family: var(--font-serif), Georgia, serif;
+  font-feature-settings: "onum", "pnum";
+}
+
+/* Drop cap for editorial/reading surfaces. */
+.dropcap::first-letter {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 3.4em;
+  line-height: 0.78;
+  float: left;
+  padding: 0.04em 0.1em 0 0;
+  color: var(--accent-strong);
 }
 .shimmer {
   position: relative;
@@ -278,6 +375,15 @@ html.reading main {
 .reading-prose p {
   margin: 0.9em 0;
   color: var(--foreground);
+}
+.reading-prose > p:first-of-type::first-letter {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 3.6em;
+  line-height: 0.74;
+  float: left;
+  padding: 0.04em 0.12em 0 0;
+  color: var(--accent-strong);
 }
 
 .reading-prose h1 {

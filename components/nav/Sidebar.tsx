@@ -39,12 +39,15 @@ export function Sidebar() {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border/70 bg-card/40 px-4 py-6 backdrop-blur-xl md:flex">
-      <Link href="/" className="flex items-center gap-2.5 px-2">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-ember text-lg shadow-glow">
-          📓
+      <Link href="/" className="group flex items-center gap-2.5 px-2">
+        <span className="grid h-9 w-9 place-items-center rounded-xl bg-ember font-serif text-lg font-semibold text-white shadow-glow transition-transform duration-300 group-hover:-rotate-3">
+          <span className="relative z-10">M</span>
         </span>
-        <span className="font-serif text-xl font-semibold tracking-tight">
-          Mindline
+        <span className="flex flex-col leading-none">
+          <span className="font-serif text-xl font-semibold tracking-tight">
+            Mindline
+          </span>
+          <span className="eyebrow mt-1 text-[0.5625rem]">The Almanac</span>
         </span>
       </Link>
 

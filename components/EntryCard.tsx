@@ -24,17 +24,15 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 pr-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            {formatEntryDate(entry.entry_date)}
-          </p>
-          <h3 className="mt-1 truncate font-serif text-lg font-semibold tracking-tight transition-colors group-hover:text-accent-strong">
+          <p className="eyebrow">{formatEntryDate(entry.entry_date)}</p>
+          <h3 className="mt-1.5 truncate font-serif text-xl font-semibold tracking-tight transition-colors group-hover:text-accent-strong">
             {entry.title || "Untitled"}
           </h3>
         </div>
         {entry.mood && (
           <span
             title={MOOD_LABEL[entry.mood]}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-card-muted text-lg"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-card-muted text-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110"
           >
             {MOOD_EMOJI[entry.mood]}
           </span>
@@ -42,10 +40,12 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
       </div>
 
       {entry.body_plain && (
-        <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 line-clamp-2 font-serif text-[0.95rem] leading-relaxed text-muted-foreground">
           {excerpt(entry.body_plain, 140)}
         </p>
       )}
+
+      <div className="rule-brass mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
       <div className="mt-3.5 flex items-center justify-between gap-3">
         {entry.tags.length > 0 ? (

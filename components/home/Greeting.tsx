@@ -31,8 +31,8 @@ export function Greeting() {
 
   return (
     <div>
-      <p className="text-sm font-medium text-accent-strong">{today || " "}</p>
-      <h1 className="mt-0.5 font-serif text-3xl font-semibold tracking-tight">
+      <p className="eyebrow">{today || " "}</p>
+      <h1 className="mt-1.5 font-serif text-4xl font-semibold leading-[1.05] tracking-tight">
         {greeting}
       </h1>
     </div>

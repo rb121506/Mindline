@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Hanken_Grotesk, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, themeScript } from "@/components/ThemeProvider";
 import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const hankenSans = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
 });
 
@@ -17,7 +17,8 @@ const geistMono = Geist_Mono({
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["opsz"],
+  style: ["normal", "italic"],
+  axes: ["opsz", "SOFT"],
 });
 
 export const metadata: Metadata = {
@@ -39,16 +40,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${hankenSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <meta name="theme-color" content="#d97706" />
+        <meta name="theme-color" content="#c2410c" />
         <link rel="apple-touch-icon" href="/icon.svg" />
       </head>
       <body className="min-h-full bg-background text-foreground font-sans">
         <ThemeProvider>{children}</ThemeProvider>
+        <div className="grain" aria-hidden="true" />
         <ServiceWorkerRegistrar />
       </body>
     </html>
